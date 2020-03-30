@@ -2,27 +2,36 @@ package com.example;
 
 import com.example.exceptions.NameValidationException;
 import org.junit.jupiter.api.Test;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
+import org.junit.runner.RunWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mockito;
+import org.mockito.junit.MockitoJUnitRunner;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.Mockito.mock;
 
-@SpringBootTest
+@RunWith(MockitoJUnitRunner.class)
 class NameServiceTest {
-    @Autowired
-    private NameService nameService;
+    private Name name = mock(Name.class);
+
+    @InjectMocks
+    private NameService nameService = new NameService();
 
     @Test
     public void shouldReturnName() {
         Name expected = new Name("name");
-        Name actual = nameService.validateName(new Name("name"));
+
+        Mockito.when(name.getName()).thenReturn("name");
+        Name actual = nameService.validateName(name);
 
         assertEquals(expected, actual);
     }
 
     @Test
     public void shouldThrowNameValidationException() {
-        assertThrows(NameValidationException.class, () -> nameService.validateName(new Name("")));
+        Mockito.when(name.getName()).thenReturn("");
+
+        assertThrows(NameValidationException.class, () -> nameService.validateName(name));
     }
 }
