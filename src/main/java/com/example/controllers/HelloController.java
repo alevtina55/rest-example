@@ -2,6 +2,7 @@ package com.example.controllers;
 
 import com.example.Name;
 import com.example.NameService;
+import com.example.exceptions.NotUniqueNameException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -33,9 +34,20 @@ public class HelloController {
 
     @PostMapping("/names")
     public ResponseEntity<Name> saveName(@RequestBody Name name) {
+
+        if (isNotUnique(name)) {
+            throw new NotUniqueNameException("This name already exists");
+        }
+
         names.add(nameService.validateName(name));
 
         return ResponseEntity.status(HttpStatus.CREATED).body(name);
+    }
+
+    private boolean isNotUnique(Name nameToCheck) {
+        return names.stream()
+                .map(Name::getName)
+                .anyMatch(name -> name.equals(nameToCheck.getName()));
     }
 }
 

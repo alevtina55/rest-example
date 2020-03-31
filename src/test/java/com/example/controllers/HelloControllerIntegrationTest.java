@@ -33,4 +33,15 @@ class HelloControllerIntegrationTest {
                 .andDo(print())
                 .andExpect(status().isBadRequest());
     }
+
+    @Test
+    void shouldReturnConflictStatus() throws Exception {
+        mockMvc.perform(post("/hello/names").content("{\"name\": \"name\"}")
+                                .contentType("application/json"));
+
+        mockMvc.perform(post("/hello/names").content("{\"name\": \"name\"}")
+                                .contentType("application/json"))
+                .andDo(print())
+                .andExpect(status().isConflict());
+    }
 }

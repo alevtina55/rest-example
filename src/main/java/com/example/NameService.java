@@ -1,12 +1,18 @@
 package com.example;
 
 import com.example.exceptions.NameValidationException;
-import org.springframework.stereotype.Service;
 
-@Service
+import java.util.function.Predicate;
+
 public class NameService {
+    private final Predicate<Name> isEmptyPredicate;
+
+    public NameService(Predicate<Name> isEmptyPredicate) {
+        this.isEmptyPredicate = isEmptyPredicate;
+    }
+
     public Name validateName(Name name) {
-        if (name.getName().isEmpty()) {
+        if (isEmptyPredicate.test(name)) {
             throw new NameValidationException("Name can not be empty");
         }
 
